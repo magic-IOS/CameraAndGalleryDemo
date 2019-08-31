@@ -55,7 +55,7 @@ class CameraAndGalleryPermisson: NSObject{
                 
                     vc.showAlert(string: "You don't have camera")
                 
-               //vc.showAlertWithTitle(title: "Warning", string: "You don't have camera")
+               
             }
         }) {
             
