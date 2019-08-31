@@ -15,6 +15,7 @@
 		1836D83C231A3E45001839E1 /* CameraAndGalleryDemoTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1836D83B231A3E45001839E1 /* CameraAndGalleryDemoTests.swift */; };
 		1836D847231A3E45001839E1 /* CameraAndGalleryDemoUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1836D846231A3E45001839E1 /* CameraAndGalleryDemoUITests.swift */; };
 		1836D855231A3E9F001839E1 /* CameraAndGalleryPermisson.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1836D854231A3E9F001839E1 /* CameraAndGalleryPermisson.swift */; };
+		1836D857231A448E001839E1 /* CamaraPhotosAndFileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1836D856231A448E001839E1 /* CamaraPhotosAndFileManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -49,6 +50,7 @@
 		1836D846231A3E45001839E1 /* CameraAndGalleryDemoUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraAndGalleryDemoUITests.swift; sourceTree = "<group>"; };
 		1836D848231A3E45001839E1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1836D854231A3E9F001839E1 /* CameraAndGalleryPermisson.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraAndGalleryPermisson.swift; sourceTree = "<group>"; };
+		1836D856231A448E001839E1 /* CamaraPhotosAndFileManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CamaraPhotosAndFileManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -102,6 +104,7 @@
 				1836D826231A3E43001839E1 /* AppDelegate.swift */,
 				1836D828231A3E43001839E1 /* ViewController.swift */,
 				1836D854231A3E9F001839E1 /* CameraAndGalleryPermisson.swift */,
+				1836D856231A448E001839E1 /* CamaraPhotosAndFileManager.swift */,
 				1836D82A231A3E43001839E1 /* Main.storyboard */,
 				1836D82D231A3E44001839E1 /* Assets.xcassets */,
 				1836D82F231A3E44001839E1 /* LaunchScreen.storyboard */,
@@ -261,6 +264,7 @@
 			files = (
 				1836D829231A3E43001839E1 /* ViewController.swift in Sources */,
 				1836D855231A3E9F001839E1 /* CameraAndGalleryPermisson.swift in Sources */,
+				1836D857231A448E001839E1 /* CamaraPhotosAndFileManager.swift in Sources */,
 				1836D827231A3E43001839E1 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
