@@ -40,93 +40,113 @@ class CameraAndGalleryPermisson: NSObject{
     
     func openCamara(_ vc : UIViewController,isEdit : Bool,_ imageComplition : @escaping imageComplition){
         
-        
-        CameraAndGalleryPermisson.sharedInstance.checkPermissionForCamera(authorizedRequested: {
-            let picker = UIImagePickerController()
-            picker.delegate = self
-            if (UIImagePickerController.isSourceTypeAvailable(UIImagePickerController.SourceType.camera)) {
-                picker.sourceType = UIImagePickerController.SourceType.camera
-                picker.allowsEditing = isEdit
-                picker.isEditing = isEdit
-                vc.present(picker, animated: true, completion: nil)
-                self.complation = imageComplition
-            }
-            else {
-                
-                    vc.showAlert(string: "You don't have camera")
-                
-               
-            }
-        }) {
-            
-            vc.showAlertWithOkAndCancelHandler(string: "Please allow access to camera permission.", strOk: "Settings", strCancel: "Cancel", handler: { (isSettings) in
-                if isSettings{
-                    UIApplication.shared.open(URL(string:UIApplication.openSettingsURLString)!, options: [:], completionHandler: { (_ ) in
-                        
-                    })
+        self.checkPermissionForCamera { [weak self] isAuthorized in
+            guard let `self` = self else { return }
+            if isAuthorized {
+                let picker = UIImagePickerController()
+                picker.delegate = self
+                if (UIImagePickerController.isSourceTypeAvailable(UIImagePickerController.SourceType.camera)) {
+                    picker.sourceType = UIImagePickerController.SourceType.camera
+                    picker.allowsEditing = isEdit
+                    picker.isEditing = isEdit
+                    vc.present(picker, animated: true, completion: nil)
+                    self.complation = imageComplition
                 }
-            })
+                else {
+                    DispatchQueue.main.async {
+                        imageComplition(nil,nil,nil)
+                        vc.showAlert(string: "You don't have camera")
+                    }
+                }
+            }else{
+                DispatchQueue.main.async {
+                    vc.showAlertWithOkAndCancelHandler(string: "Please allow access to camera permission.", strOk: "Settings", strCancel: "Cancel", handler: { (isSettings) in
+                        if isSettings{
+                            UIApplication.shared.open(URL(string:UIApplication.openSettingsURLString)!, options: [:], completionHandler: { (_ ) in
+                            })
+                        }
+                    })
+                    imageComplition(nil,nil,nil)
+                }
+            }
         }
     }
     
     func openPhotoLibrary(_ vc : UIViewController,isEdit : Bool,_ imageComplition : @escaping imageComplition){
-        self.checkPhotoLibraryPermission(authorizedRequested: {
-            if (UIImagePickerController .isSourceTypeAvailable(UIImagePickerController.SourceType.photoLibrary)) {
-                let picker = UIImagePickerController()
-                picker.delegate = self
-                picker.sourceType = UIImagePickerController.SourceType.photoLibrary
-                picker.allowsEditing = isEdit
-                picker.isEditing = isEdit
-                
-                vc.present(picker, animated: true, completion: nil)
-                self.complation = imageComplition
-            }else{
-                //no photoLibrary
-                vc.showAlert(string: "You don't have photoLibrary")
-                
-            }
-        }) {
-            //deniedRequested
-            vc.showAlertWithOkAndCancelHandler(string: "Please allow access to Photo Library permission.", strOk: "Settings", strCancel: "Cancel", handler: { (isSettings) in
-                if isSettings{
-                    UIApplication.shared.open(URL(string:UIApplication.openSettingsURLString)!, options: [:], completionHandler: { (_ ) in
-                        
-                    })
+        self.checkPhotoLibraryPermission { [weak self] isAuthorized in
+            guard let `self` = self else { return }
+            if isAuthorized {
+                if (UIImagePickerController .isSourceTypeAvailable(UIImagePickerController.SourceType.photoLibrary)) {
+                    let picker = UIImagePickerController()
+                    picker.delegate = self
+                    picker.sourceType = UIImagePickerController.SourceType.photoLibrary
+                    picker.allowsEditing = isEdit
+                    picker.isEditing = isEdit
+                    
+                    vc.present(picker, animated: true, completion: nil)
+                    self.complation = imageComplition
+                }else{
+                    //no photoLibrary
+                    DispatchQueue.main.async {
+                        vc.showAlert(string: "You don't have photoLibrary")
+                        imageComplition(nil,nil,nil)
+                    }
                 }
-            })
+            }else{
+                DispatchQueue.main.async {
+                    vc.showAlertWithOkAndCancelHandler(string: "Please allow access to Photo Library permission.", strOk: "Settings", strCancel: "Cancel", handler: { (isSettings) in
+                        if isSettings{
+                            UIApplication.shared.open(URL(string:UIApplication.openSettingsURLString)!, options: [:], completionHandler: { (_ ) in
+                                
+                            })
+                        }
+                    })
+                    imageComplition(nil,nil,nil)
+                }
+            }
         }
-        
     }
     
-    private func checkPermissionForCamera(authorizedRequested : @escaping () -> Swift.Void,deniedRequested : @escaping () -> Swift.Void) -> Void {
+    private func checkPermissionForCamera(authorizedRequested : @escaping (_ isAuthorized:Bool) -> Swift.Void) -> Void {
         if AVCaptureDevice.authorizationStatus(for: .video) ==  .authorized {
-            authorizedRequested()
+            DispatchQueue.main.async {
+                authorizedRequested(true)
+            }
         }
         else if AVCaptureDevice.authorizationStatus(for: .video) ==  .denied || AVCaptureDevice.authorizationStatus(for: .video) ==  .restricted {
             //restricted
-            deniedRequested()
-            
+            DispatchQueue.main.async {
+                authorizedRequested(false)
+            }
         }else {
             AVCaptureDevice.requestAccess(for: .video, completionHandler: { (granted: Bool) in
                 if granted {
-                    authorizedRequested()
+                    DispatchQueue.main.async {
+                        authorizedRequested(true)
+                    }
                 } else {
-                    deniedRequested()
+                    DispatchQueue.main.async {
+                        authorizedRequested(false)
+                    }
                 }
             })
         }
     }
     
-    private func checkPhotoLibraryPermission(authorizedRequested : @escaping () -> Swift.Void,deniedRequested : @escaping () -> Swift.Void) {
+    private func checkPhotoLibraryPermission(authorizedRequested : @escaping (_ isAuthorized:Bool) -> Swift.Void) {
         let status = PHPhotoLibrary.authorizationStatus()
         switch status {
         case .authorized:
             //handle authorized status
-            authorizedRequested()
+            DispatchQueue.main.async {
+                authorizedRequested(true)
+            }
             break
         case .denied, .restricted :
             //handle denied status
-            deniedRequested()
+            DispatchQueue.main.async {
+                authorizedRequested(false)
+            }
             break
         case .notDetermined:
             // ask for permissions
@@ -134,20 +154,30 @@ class CameraAndGalleryPermisson: NSObject{
                 switch status {
                 case .authorized:
                     // as above
-                    authorizedRequested()
+                    DispatchQueue.main.async {
+                        authorizedRequested(true)
+                    }
                     break
                 case .denied, .restricted:
-                    deniedRequested()
+                    DispatchQueue.main.async {
+                        authorizedRequested(false)
+                    }
                     break
                 case .notDetermined:
                     // won't happen but still
                     break
-                 default:
+                default:
+                    DispatchQueue.main.async {
+                        authorizedRequested(true)
+                    }
                     break;
                 }
             }
             break
-         default:
+        default:
+            DispatchQueue.main.async {
+                authorizedRequested(true)
+            }
             break;
         }
     }
@@ -178,18 +208,22 @@ extension CameraAndGalleryPermisson : UIImagePickerControllerDelegate,UINavigati
             strImageName = "\(Int(Date().timeIntervalSince1970)).png"
         }
         guard image != nil else {
-            self.complation(nil,nil,"enable to get image" as? Error)
+            DispatchQueue.main.async {
+                self.complation(nil,nil,"enable to get image" as? Error)
+            }
             return
         }
-        self.complation(image,strImageName,nil)
-        
+        DispatchQueue.main.async {
+            self.complation(image,strImageName,nil)
+        }
     }
-   
+    
     
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         picker .dismiss(animated: true, completion: nil)
-        
-        self.complation(nil,nil,nil)
+        DispatchQueue.main.async {
+            self.complation(nil,nil,nil)
+        }
     }
 }
 

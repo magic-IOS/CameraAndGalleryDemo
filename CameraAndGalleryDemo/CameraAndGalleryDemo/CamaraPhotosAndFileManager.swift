@@ -53,7 +53,7 @@ class CamaraPhotosAndFileManager: NSObject{
         }
         viewController.present(alert, animated: true, completion: nil)
     }
-
+    
     func openFileForiCloud(_ viewController : UIViewController,isEdit : Bool = true,_ fileComplition : @escaping fileComplition){
         let types = ["public.item"]
         let picker = UIDocumentPickerViewController(documentTypes: types as [String], in: .open)
@@ -72,8 +72,8 @@ extension CamaraPhotosAndFileManager : UIDocumentPickerDelegate{
             controller.documentPickerMode == .open,
             let url = urls.first,
             url.startAccessingSecurityScopedResource()
-            else {
-                return
+        else {
+            return
         }
         defer {
             url.stopAccessingSecurityScopedResource()
@@ -81,13 +81,14 @@ extension CamaraPhotosAndFileManager : UIDocumentPickerDelegate{
         do {
             
             let data = try Data(contentsOf: url)
-            
-            complationFile(data,url,nil)
-            
+            DispatchQueue.main.async {
+                self.complationFile(data,url,nil)
+            }
         }
         catch {
-            complationFile(nil,nil,error)
-            
+            DispatchQueue.main.async {
+                self.complationFile(nil,nil,error)
+            }
         }
     }
     
@@ -96,8 +97,8 @@ extension CamaraPhotosAndFileManager : UIDocumentPickerDelegate{
         guard
             controller.documentPickerMode == .open,
             url.startAccessingSecurityScopedResource()
-            else {
-                return
+        else {
+            return
         }
         defer {
             url.stopAccessingSecurityScopedResource()
@@ -105,13 +106,14 @@ extension CamaraPhotosAndFileManager : UIDocumentPickerDelegate{
         do {
             
             let data = try Data(contentsOf: url)
-            
-            complationFile(data,url,nil)
-           
+            DispatchQueue.main.async {
+                self.complationFile(data,url,nil)
+            }
         }
         catch {
-            complationFile(nil,nil,error)
-            
+            DispatchQueue.main.async {
+                self.complationFile(nil,nil,error)
+            }
         }
     }
 }
